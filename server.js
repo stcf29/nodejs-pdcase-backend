@@ -14,6 +14,23 @@ app.use(cors())
 //POST
 app.post('/pacientes', async (req, res) => {
     
+    const { nome, carteira, plano, especialidade } = req.body;
+
+     // Verifica duplicidade
+    const existPaciente = await prisma.paciente.findFirst({
+        where: {
+            carteira: carteira,
+            plano: plano,
+            especialidade: especialidade,
+            },
+        });
+
+        if (existPaciente) {
+            return res.status(400).json({
+            message: `Esta especialidade ${especialidade} já foi utilizada para o plano ${plano}`,
+            });
+        }
+
     await  prisma.paciente.create({
         data: {
            nome: req.body.nome,
@@ -23,7 +40,10 @@ app.post('/pacientes', async (req, res) => {
         } 
     })
     
-    res.status(201).json(req.body)
+    return res.status(201).json({
+        message: 'Paciente cadastrado com sucesso!',
+        paciente: { nome, carteira, plano, especialidade },
+    });
 })
 
 //GET
