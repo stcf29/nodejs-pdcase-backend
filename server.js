@@ -19,7 +19,7 @@ app.post('/pacientes', async (req, res) => {
      // Verifica duplicidade
     const existPaciente = await prisma.paciente.findFirst({
         where: {
-            carteira: carteira,
+             carteira: carteira,
             plano: plano,
             especialidade: especialidade,
             },
@@ -98,6 +98,27 @@ app.delete('/pacientes/:id', async (req, res) => {
 })
 
 
+
+
+app.get('/especialidades', async (req, res) => {
+
+    try{
+        const especialidades = await prisma.especialidade.findMany();
+        res.status(200).json(especialidades)
+    }catch(error){
+        res.status(500).json({ error: "Erro ao buscar especialidades"})
+    }
+})
+
+app.get('/planos', async (req, res) => {
+
+    try{
+        const planos = await prisma.plano.findMany();
+        res.status(200).json(planos)
+    }catch(error){
+        res.status(500).json({ error: "Erro ao buscar planos"})
+    }
+})
 
 
 app.listen(3000)
